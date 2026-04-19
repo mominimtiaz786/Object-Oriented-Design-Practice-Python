@@ -1,15 +1,21 @@
 from . import (
     ElevatorStatus,
-    DispatchStrategy,
     ElevatorDispatch,
     ElevatorCar,
 )
+from .hallway_button_panel import HallwayButtonPanel
+from .elevator_observer import ElevatorDispatchController
 
 class ElevatorSystem:
-    def __init__(self, dispatch_controller: DispatchStrategy):
+    def __init__(self, dispatch_controller: ElevatorDispatch):
         self.elevators: list[ElevatorCar] = []
         self.dispatch_controller: ElevatorDispatch = dispatch_controller
+        self.observer: ElevatorDispatchController = ElevatorDispatchController(dispatch_controller, self.elevators)
     
+
+    def registerButtonPanel(self, panel: HallwayButtonPanel):
+        panel.addObserver(self.observer)
+
 
     def getAllElevatorsStatuses(self)-> list[ElevatorStatus]:
         return map(lambda elevators: elevators.getStatus(), self.elevators)
