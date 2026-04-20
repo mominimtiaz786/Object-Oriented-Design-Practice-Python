@@ -17,3 +17,20 @@ class PercentageBasedStrategy(DiscountCalculationStrategy):
 
     def calculateDiscountedPrice(self, original_price: float):
         return original_price - original_price*self.discount_percentage/100.0
+
+class FixedDiscountDecorator(DiscountCalculationStrategy):
+    def __init__(self, strategy: DiscountCalculationStrategy, fixed_amount: float):
+        self.strategy = strategy
+        self.fixed_amount = fixed_amount
+
+    def calculateDiscountedPrice(self, original_price: float):
+        return self.strategy.calculateDiscountedPrice(original_price).subtract(self.fixed_amount);
+
+class PercentageDiscountDecorator(DiscountCalculationStrategy):
+    def __init__(self, strategy: DiscountCalculationStrategy, additional_percentage: float):
+        self.strategy = strategy
+        self.additional_percentage = additional_percentage
+    
+    def calculateDiscountedPrice(self, original_price: float):
+        base_discounted_price = self.strategy.calculateDiscountedPrice(original_price)
+        return base_discounted_price * ( 1 - self.additional_percentage/100)
