@@ -1,0 +1,2 @@
+class MaximumStoragePeriodException(Exception):
+    pass
